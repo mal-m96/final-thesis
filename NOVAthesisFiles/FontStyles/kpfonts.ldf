@@ -1,0 +1,15 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% FontStyles/kpfonts.ldf
+%% NOVA thesis configuration file
+%%
+%% Customization of fonts to use a Paltino-like font set
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\typeout{NT FILE FontStyles/kpfonts.ldf}
+
+\ifxeorlua{%
+  \RequirePackage{kpfonts-otf}%
+}{%
+  \RequirePackage[notextcomp,noamsmath]{kpfonts}%
+  \RequirePackage[cal=boondoxo]{mathalfa}% mathcal
+}
