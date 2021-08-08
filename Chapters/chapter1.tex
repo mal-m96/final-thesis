@@ -6,11 +6,12 @@
 %% Chapter with introduction
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\typeout{NT FILE chapter1.tex}
+
 
 \chapter{Introduction}
-\label{cha:introduction}
+\label{cha:introduction} 
 
+\begin{comment}
 % epigraph configuration
 \epigraphfontsize{\small\itshape}
 \setlength\epigraphwidth{12.5cm}
@@ -20,193 +21,40 @@
   This work is licensed under the \href{LaTeX project public license}{\LaTeX\ Project Public License v1.3c}.
   To view a copy of this license, visit \url{LaTeX project public license}.
 }
+\end{comment}
 
-This is the \novathesis\ \LaTeX\ template version v\novathesisversion\ from \novathesisdate.
+\section{Context}
+\label{context}
+%Cancer is a leading cause of death worldwide, it begins when some cells in a part of the body start to grow out of control. 
+\hspace{10px}Although from 1999 to 2019 there has been a 27\% decrease in cancer-related deaths per 100,000 population, it is still among the leading causes of death worldwide. In 2018, more than 50\% of the people diagnosed with cancer didn't survived the treatment and about 18.1 million new cases were reported, of which 9.5 million have died %cancer-related deaths    
+worldwide. Is estimated that by 2040, the number of new cancer cases per year as well as cancer-related deaths are expected to double its original value, to 29.5 million of cases and 16.4 million to cancer-related deaths. This boost in cancer cases and  overall risks is due to our increase in lifespan. Researchers estimate that about two-thirds of this increase is due to the fact that we are living longer and the remaining one-third it's caused by changes in cancer rates in different age groups.
 
-\section{If You Use this Template…} 
-\label{sub:if_you_use_this_template}
+Despite the presence of more than one type of cancer that differ in the way of growing cells and spreading, the development of all these kinds is driven by “genetic alterations” and “epigenetic changes” of the DNA genome\cite{Herceg}. A typical cancer genome contains thousands of mutations, the vast majority occur in sequences that do not encode proteins, but still can influence gene expression. However, classical models of tumor evolution show that cancer progression is driven by only a few of these mutations, which are under strong \gls{positive selection} and so making them preferentially maintained in the cancer-cell population. 
 
-This Chapter presents an introduction to the template and how it is organized. In the next chapter you can find some specific instructions. Please read the next sections carefully.
+Since there are numerous mutations occurring within a cancer cell genome, one of the biggest challenges is to identify specifically the driver mutation from all other passenger mutations. Large scale projects, such as the Cancer Genome Atlas (project to identify the complete set of DNA changes in many different types of cancers) and Cancer Genome Project (aims to identify sequence variants/mutations critical in the development of human cancers) focus on identifying all cancer-causing genes and accurately identifying all cancer driving genes from individual patients, which becomes important for its application to precision in medicine. Since most of the mutations are passengers, they become irrelevant to classification and predictions models and can have a negative effect by introducing noise and therefore decreasing the precision of the predication \cite{Li}.   
 
-Someone spent a few dozens of hours working on this template to make your life easier and to allow you to be more productive.  Those working hours were not paid and were “stolen” from family.
-If you use this template, please go to the
-\href{https://github.com/joaomlourenco/novathesis_word}{project web page in GitGub}
-and:
-\begin{enumerate}
-  \item Cite it~\cite{novathesis-manual} in your thesis/disseration, any place you think it makes sense.
-  \item Give the project a star (marked with a red ellipse at the top-right in Figure~\ref{fig:github}); and
-  \item Make a small donation (marked with a red ellipse at the bottom-left in Figure~\ref{fig:github}).
-\end{enumerate}
+Ideally, a good dimensionality reduction method should eliminate these irrelevant mutations while at the same time retain all the highly discriminative mutations. Therefore, using feature selection and extraction techniques in cancer predication becomes essential to precisely identify the driver mutations that are behind abnormal cell proliferation and eventually tumorigenesis. Thus, many recent researches applied feature selection and extraction techniques to extract useful information and diagnosis the tumor [10]-[15]CITACOES URGENTE.
 
-\begin{figure}[htbp]
-  \centering
-    \includegraphics[width=\textwidth]{github1}
-  \caption{The \novathesis{} project web page in GitHub.}
-  \label{fig:github}
-\end{figure}
-
-
-\section{The \emph{NOVAthesis} template}
-\label{sec:a_bit_of_history}
-
-\newcommand{\mysmallcoversize}{0.09\linewidth}
-
-The \gls{novathesis} was initially directed to the PhD and MSc students thesis at \gls{DI} of the \gls{FCT} of the \gls{NOVA}, Portugal, but currently (v5.2.1) it supports other degrees and Schools, namely:
-\begin{itemize}
-  \item NOVA University Lisbon
-      \begin{itemize}
-          \item[]
-          \begin{tabularx}{\linewidth}{cX}
-              \fbox{\includegraphics[width=\mysmallcoversize]{cover-phd-nova-fct}} &
-              NOVA School of Science and Technology \href{https://www.fct.unl.pt}{(FCT-NOVA)}\\
-              \fbox{\includegraphics[width=\mysmallcoversize]{cover-phd-nova-fcsh}} &
-              NOVA School of Social Sciences and Humanities (\href{https://www.fcsh.unl.pt}{FCSH-NOVA})\\
-              \fbox{\includegraphics[width=\mysmallcoversize]{cover-phd-nova-ims}} &
-              NOVA Information Management School (\href{https://www.novaims.unl.pt}{NOVA-IMS})\\
-              \fbox{\includegraphics[width=\mysmallcoversize]{cover-phd-nova-ensp}} &
-              National School of Public Heath (\href{https://www.ensp.unl.pt}{ENSP-NOVA})\\
-          \end{tabularx}
-      \end{itemize}
-  \item University of Lisbon
-      \begin{itemize}
-          \item[]
-          \begin{tabularx}{\linewidth}{cX}
-              \fbox{\includegraphics[width=\mysmallcoversize]{cover-phd-ul-ist}} &
-              Instituto Superior Técnico (\href{https://tecnico.ulisboa.pt}{IST-UL})\\
-              \fbox{\includegraphics[width=\mysmallcoversize]{cover-phd-ul-fc}} &
-              Faculdade de Ciências (\href{https://ciencias.ulisboa.pt}{FC-UL})\\
-          \end{tabularx}
-      \end{itemize}
-  \item Instituto Politécnico de Lisboa
-      \begin{itemize}  
-          \item[]
-          \begin{tabularx}{\linewidth}{cX}
-              \fbox{\includegraphics[width=\mysmallcoversize]{cover-phd-ipl-isel}} &
-              Instituto Superior de Engenharia de Lisboa (\href{https://www.isel.pt}{ISEL-IPL})\\
-          \end{tabularx}
-      \end{itemize}
-  \item Instituto Politécnico de Setúbal
-      \begin{itemize}  
-          \item[]
-          \begin{tabularx}{\linewidth}{cX}
-              \fbox{\includegraphics[width=\mysmallcoversize]{cover-phd-ips-ests}} &
-              Escola Superior de Tecnologia de Setúbal (\href{https://www.estbarreiro.ips.pt}{ESTS-IPS})\\
-          \end{tabularx}
-      \end{itemize}
-  \item Escola Superior de Enfermagem do Porto (\href{https://www.esenf.pt/pt/}{ESEP})
-      \begin{itemize}  
-          \item[]
-          \begin{tabularx}{\linewidth}{cX}
-              \fbox{\includegraphics[width=\mysmallcoversize]{cover-phd-esep}} &
-              Escola Superior de Enfermagem do Porto (\href{https://www.esenf.pt/pt/}{ESEP})\\
-          \end{tabularx}
-      \end{itemize}
-\end{itemize}
-
-The \gls{novathesis} \LaTeX\ template also supports the following degrees from Universities' Consortia:
-\begin{itemize}
-  \item[]
-    \begin{tabularx}{\linewidth}{cX}
-      \fbox{\includegraphics[width=\mysmallcoversize]{cover-phd-esep}} &
-      Erasmus Mundus \href{https://mastergeotech.info}{Masters Program in Geospatial Technologies}\\
-    \end{tabularx}
-\end{itemize}
-
-\section{Getting Started}
-\label{sec:getting_started}
-
-The template provides an \emph{easy to use} setting for you to write your thesis/dissertation in \LaTeX:
-\begin{itemize}
-  \item  Select your school;
-  \item Fill your thesis metadata (title, research field, etc) in the file “\texttt{template.tex}”;
-  \item Create your thesis/dissertation contents using the files in folder “\texttt{Chapters}”; and
-  \item Process using you favorite \LaTeX\ processor (pdf\LaTeX, \XeLaTeX\ or \LuaLaTeX).
-\end{itemize}
-
-\subsection{Using Overleaf}
-\label{sub:using_overleaf}
-
-\begin{wrapfigure}{r}{0.5\linewidth}
-\vspace*{-15ex}\includegraphics[width=\linewidth]{overleaf}%
-\end{wrapfigure}
-
-If you do not have an account in \href{https://www.overleaf.com?r=f5160636&rm=d&rs=b}{Overleaf}, you must \href{https://www.overleaf.com?r=f5160636&rm=d&rs=b}{create one first}.
-
-Once you have an account, please access the \glsxtrlong{novathesis} in \href{https://www.overleaf.com/latex/templates/new-university-of-lisbon-universidade-nova-de-lisboa-slash-unl-thesis-template/fwbztcrptjmg}{Overleaf} and select the green button \emph{Open as Template}. 
-
-\emph{Please note that the version currently available in Overleaf (v4.1.3) is outdated. A new version will be submitted to Overleaf soon.}  
-
-\subsection{Using a Local \LaTeX\ Installation}
-\label{sub:using_local_latex}
-
-\begin{wrapfigure}{r}{0.5\linewidth}
-\vspace*{-15ex}\includegraphics[width=\linewidth]{github}%
-\end{wrapfigure}
-
-Just access the \glsxtrlong{novathesis} in \href{https://github.com/joaomlourenco/novathesis}{GitHub}, select the green button \emph{Code} and then \emph{download} (or \emph{clone}) the template.  You will always get the latest version of the template (currently v5.1.8).
-
-
-\section{Getting Help}
-\label{sec:getting_help}
-
-\begin{center}  
-  \fbox{\textbf{Please do not send me emails!  I will not answer them!}}
-\end{center}
+In this thesis, will be proposed a new and better approach for selecting the best features to later train models for different purposes like classifying cancer types or predicting survival time. This approach will use different feature selection and extraction techniques, to rid of irrelevant and noisy information and improve cancer classification accuracy based on the \gls{TCGA} data. 
  
-\subsection{Google}
-\label{sub:group_google}
+\section{Objectives and methodology}
+\label{objectives_and_methodology}
+\hspace{10px}The main objective of this dissertation is to study the impact of feature selection and extraction methods on the ability of classifiers to distinguish between drivers and passengers mutations and for that, it will be use data from the TCGA data portal. For that aim, two requirements must be met: implementation of different methods of dimension reduction and features extraction to find the best features attributes to identify driver genes, as well as, a implementation of  different feature selection methods to find the best features to identify driver genes.
 
-Remember, when looking for hints or help, \emph{\href{google.com}{Google} is your best friend}!   And if you prefix your Google query with “\emph{LaTeX}”, your fist link will most probably direct you to \texttt{tex.stackexchange.com}.
+It is also the objective of this work to create a library with the best selected methods, that is, methods with the best performance, as well as methods independent of the classifiers, capable of being implemented in any prediction and classification model. This recommendation will help researchers gain a better perception and understanding of the data as well as contribute to increasing the accuracy and decreasing the duration of classification algorithms.
 
-\subsection{Group Support}
-\label{sub:group_support}
-
-To get directed help on the \glsxtrlong{novathesis} please join:
-\begin{itemize}
-  \item the \href{https://www.facebook.com/groups/novathesis}{NOVAtheis Facebook group}, or
-  \item the \href{https://groups.google.com/forum/#!forum/novathesis}{NOVAthesis Google group}.
-\end{itemize}
-
-There were huge changes from version 4.x.y to version 5.a.b so, please, \textbf{always} state the version number you are using when asking for help.
-
-\subsection{Reporting Problems}
-\label{sub:reporting_problems}
-
-If you just need some help, see above \Autoref{sub:group_google} and \Autoref{sub:group_support}.
-
-If you believe \emph{you found a bug} or if \emph{you need some improvement} in the template, please \href{https://github.com/joaomlourenco/novathesis/issues}{fill an issue in github} at \url{https://github.com/joaomlourenco/novathesis/issues}.
+In consequence, this dissertation’s results will provide a new insight over driver genes data. A way to select only the key driver mutations that represent or give rise to that specific type of cancer, an overall improvement in diagnosis.
 
 
-\section{Donations}
-\label{sec:donations}
+ 
+\section{Dissertation content}
+\label{dissertation_content}
+\hspace{10px}This dissertation is divided in seven chapters, including this first introductive chapter. The second chapter is dedicated to a general description of the data sets to use (how they are organized, what does each entry represent, are they correlated with each other...) and a review on cancer driver genes and mutations. This review continues in the Chapter 3 that focus on related works, namely the use of feature selection or extractions methods in identifying cancer-driving mutations, methods and materials used, the methods and materials used, and their results and conclusions.
 
-This template is the result of hundreds (yes! \emph{may hundreds}!) of hours of work from the \href{https://docentes.fct.unl.pt/joao-lourenco}{main developer}.  If you think this template really made you life easier while writing your thesis, please consider \href{https://paypal.me/novathesis}{\textbf{making a donation}}. We will keep a list thanking to all the identified donors that identify themselves in the “\emph{Add special instructions to the seller}” box.
-
-\subsubsection*{Donors 2020}
-\label{ssub:donors_2020}
-
-\begin{inparaitem}[]
-  \item João Carvalho, 
-  \item David Romão, 
-  \item DisplayersereStream, and
-  \item António Estêvão.  
-\end{inparaitem}
-
-\subsubsection*{Donors 2019}
-\label{ssub:donors_2019}
-
-\begin{inparaitem}[]
-  \item Jorge Barreto and
-  \item Raissa Almeida.  
-\end{inparaitem}
+Thereafter, the Chapter 4 describes the feature selection and extraction methods composition of each formulation of hemp concrete and earth mortar plaster, as well as the way they are prepared. The experimental protocols of the characterisation tests (sorption-desorption isotherms, vapour diffusion coefficient, MBV) are also presented in detail in this chapter in reference to the normative documents. 
 
 
+The standard characterization of all studied formulations at 23°C (density, sorption curves, vapour diffusion coefficient) is given in Chapter 5 while the impact of thickness and temperature are respectively reported in Chapter 6 and Chapter 7.
 
-\section{Disclaimer}
-\label{sec:disclaimer}
 
-Although this template is endorsed by the FCT-NOVA and even \href{https://www.fct.unl.pt/estudante/informacao-academica}{linked from its web site}, this is still not an official template.
-%
-This template exists to make your life easier and we do our best to make the \gls{novathesis} template compliant to the supported Schools' regulations, but in the end of the line you and only you are accountable for both the look and the contents of the document you submit as your thesis/dissertation.
-
-% \printbibliography[heading=subbibliography, segment=\therefsegment, title={\bibname\ for chapter~\thechapter}]
+Finally, conclusions of this dissertation is presented in Chapter 7.
