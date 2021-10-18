@@ -1,253 +1,152 @@
 %!TEX root = ../template.tex
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% chapter3.tex
+%% chapter4.tex
 %% NOVA thesis document file
 %%
-%% Chapter with a short latex tutorial and examples
+%% Chapter with lots of dummy text
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\typeout{NT FILE chapter3.tex}
+\typeout{NT FILE chapter4.tex}
 
-\chapter{Related Work}
-\label{cha:related_work}
+\chapter{Data Preprocessing}
+\label{cha:data_preprocessing}
+\hspace{10px}By definition, data preprocessing is the set of all data transformation, manipulation or dropping procedures before its use in supervised machine learning algorithms. In a real-world data science project, data preprocessing is one of the most important steps to be taken to ensure the success of a model, that is, between two models with the same data set the one that has undergone the correct data preprocessing steps and feature engineering is what will have a more noticeable results. The figure below shows all the steps to be taken in the construction of a viable machine learning predictive algorithm, in it we can see that data preprocessing is an indispensable step before the application of any machine learning algorithm.
 
-This Chapter aims at exemplifying how to do common stuff with \LaTeX. We also show some stuff which is not that common! ;)
-
-Please, use these examples as a starting point, but you should always consider using the \emph{Big Oracle} (aka, \href{http://www.google.com}{Google}, your best friend) to search for additional information or al-ternative ways for achieving similar results.
-
-\section{Document Structure} % (fold)
-\label{sec:document_structure}
-
-% section document_structure (end)
-
-
-\section{Dealing with Bibliography} % (fold)
-\label{sec:dealing_with_bibliography}
-
-% section dealing_with_bibliography (end)
-
-
-\section{Inserting Tables} % (fold)
-\label{sec:inserting_tables}
-
-% section inserting_tables (end)
-
-
-\section{Importing Images} % (fold)
-\label{sec:importing_images}
-
-% section importing_images (end)
-
-
-\section{Floats, Figures and Captions} % (fold)
-\label{sec:floats_figures_and_captions}
-
-% \subsection{Inserting Figures Wrapped with text} % (fold)
-% \label{ssec:inserting_images_wrapped_with_text}
-% 
-% You should only use this feature is \emph{really} necessary. This means, you have a very small image, that will look lonely just with text above and below.
-% 
-% In this case, you must use the \verb!wrapfiure! package.  To use \verb!wrapfig!, you must first add this to the preamble:
-% 
-% \begin{wrapfigure}{l}{2.5cm}
-%   \centering
-%     \includegraphics[width=2cm]{snowman-vectorial}
-%   \caption{A snow-man}
-% \end{wrapfigure}	
-% 
-% \noindent\verb!\usepackage{wrapfig}!\\
-% This then gives you access to:\\
-% \verb!\begin{wrapfigure}[lineheight]{alignment}{width}!\\
-% Alignment can normally be either ``l'' for left, or ``r'' for right. Lowercase ``l'' or ``r'' forces the figure to start precisely where specified (and may cause it to run over page breaks), while capital ``L'' or ``R'' allows the figure to float. If you defined your document as twosided, the alignment can also be ``i'' for inside or ``o'' for outside, as well as ``I'' or ``O''. The width is obviously the width of the figure. The example above was introduced with:
-% \lstset{language=TeX, morekeywords={\begin,\includegraphics,\caption}, caption=Wrapfig Example, label=lst:latex_example}
-% \begin{lstlisting}
-% 	\begin{wrapfigure}{l}{2.5cm}
-% 	  \centering
-% 	    \includegraphics[width=2cm]{snowman-vectorial}
-% 	  \caption{A snow-man}
-% 	\end{wrapfigure}	
-% \end{lstlisting}
-
-% subsection inserting_images_wrapped_with_text (end)
-
-% section floats_figures_and_captions (end)
-
-
-\begin{figure}[htbp]
-  \centering
-  \subbottom[One sub-figure\label{fig:leftsubfig}]{%
-    \includegraphics[width=0.5\linewidth]{knitting-vectorial}}%
-  \subbottom[Another sub-figure\label{fig:rightsubfig}]{%
-    \includegraphics[width=0.5\linewidth]{knitting-vectorial}}%
-  \caption{A figure with two sub-figures!}
-  \label{fig:fig2subfig}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.9\textwidth,height=0.2\textheight]{Chapters/Figures/data preprocessing.png}
+    \caption{The process of machine learning}
+    \label{fig:preprocessing}
 \end{figure}
 
-\textbf{And this is a small text that references the Figure~\ref{fig:fig2subfig} and its Subfigures~\ref{fig:leftsubfig} and~\ref{fig:rightsubfig}.}
+
+The inability of machine learning and data mining algorithms to work with raw data further reinforces the need to apply transformations to the data to bring it into a more understandable formats. Also, in real-world data, data representation is often feature intensive and having irrelevant and redundant information or noisy and unreliable data makes knowledge discovery during the training phase much more difficult. Data preprocessing can also affect how the results of the final data processing can be interpreted. Which, in this case, can have a devastating consequence in the interpretation of the results and future diagnoses \cite{Paolo}. The main function of data preprocessing is to check the quality of the data before any analysis\cite{Pyle}, especially in computational biology. Such action is performed through 3 tasks: Data cleaning, Data editing and Data reduction. Within each task, there are several steps that will be covered later in this chapter and will be important for handling and cleaning the data set before applying feature selection and extraction algorithms, such as split data into training and validation sets, handling missing values, take care of categorical features and finally feature scaling.
 
 
+\section{Missing data} % (fold)
+\label{sec:missing_data}
+\hspace{10px}Missing data is a daily problem that affects any data-related work and can show up in any type of data. By definition Missing data (or missing values) are data values that are not stored for a variable in the observation of interest, is common to find in almost all surveys and can have a significant effect on the tools that can be drawn from the data\cite{Graham}. These data types are defined as unavailable values and can be of any type, from missing string, incomplete resource, missing files, incomplete information, data entry error, etc. They can have different representations, from "?", or -999 and often by "n/a"\ or "null", in the image \ref{fig:dataset} it is possible to verify the existence of these same values with the representation of "NaN"\ in the features "GDC\_FILTER"\ and "COSMIC".
+
+The absence of these values can cause several problems during and after the application of the algorithms. The absence of data reduces the statistical power of the probability of the test rejecting the null hypothesis when it is false. It can cause bias in the estimation of parameters and reduce the representativeness of the samples, i.e the sample loses relevance. All of this can complicate the analysis of the study and impair its validity, which ultimately leads to invalid conclusions.\cite{Hang} With the evolution and development of new algorithms and automatic learning packages, there are already some capable of detecting and automatically dealing with data absent. However, it does not remove the need to transform and analyze the missing data manually. Among the numerous strategies for dealing with missing data the two most common is to replace all missing values by a fixed value, for example zero, or by the average of all available values. However, these approaches are not always the most correct, to know which is the most correct strategy to apply in our data set will depend on the domain and the type of missing data.
 
 
-\section{Text Formatting} % (fold)
-\label{sec:text_formatting}
+\subsection{Detecting Missing data and their type} % (fold)
+\label{sec:document_structure}
+\hspace{10px}According to Donal B. Rubin in \cite{Rubin} and in the book \cite{Berthold} missing data is divided into 3 types of missing data. This division is made by taking into account the mechanisms of missingness, the description of the different types is made below, going from the simplest to the most general.
 
-% section text_formatting (end)
+\begin{itemize}
+  \item \textbf{Missing completely at random (MACR):} It means that the probability of a value being absent does not depend on known values or the missing value itself, but on some other reason. The existence of missing data due to equipment failure or samples being lost or unsatisfactory, are examples of MCAR. The statistical advantage of these types of missing data is that the analysis remains impartial, that is, the estimated parameters are not influenced by the absence of data.
+  
+  \item \textbf{Missing at random (MAR):} Data is considered MAR when the probability of a missing instance may depend on other known values but not on the missing value itself. Research example: whether or not there is data referring to a feature, the lack of data does not depend on the feature itself, but may depend on values of another feature. Although randomness does not produce bias, MAR data cannot be ignored. If a missing variable is MAR, the possibility of there being a dropout of that variable in each case, is conditionally independent of the variable, being possible to predict the value through other variables observed.
 
-
-\section{Generating PDFs from \LaTeX} % (fold)
-\label{sec:generating_pdfs_from_latex}
-
-\subsection{Generating PDFs with pdflatex} % (fold)
-\label{ssec:generating_pdfs_with_pdflatex}
-
-You may create PDF files either by using \verb!latex! to generate a DVI file, and then use one of the many DVI-2-PDF converters, such as \verb!dvipdfm!.
-
-Alternatively, you may use \verb!pdflatex!, which will immediately generate a PDF with no intermediate DVI or PS files. In some systems, such as Apple, PDF is already the default format for \LaTeX. I strongly recommend you to use this approach, unless you have a very good argument to go for \verb!latex! + \verb!dvipdfm!.
-
-A typical pass for a document with figures, cross-references and a bibliography would be:
-\begin{verbatim}
-$ pdflatex template
-$ bibtex template
-$ pdflatex template
-$ pdflatex template
-\end{verbatim}
-You will notice that there is a new PDF file in the working directory called \verb!template.pdf!. Simple :)
-
-Please note that, to be sure all table of contents, cross-references and bibliographic citations are up-to-date, you must run \verb!latex! once, then \verb!bibtex!, and then \verb!latex! twice.
-% section generating_pdfs_with_pdflatex (end)
-
-\subsection{Dealing with Images} % (fold)
-\label{sub:dealing_with_images}
-
-You may process the same source files with both \verb!latex! or \verb!pdflatex!. But, if your text include images, you must be careful. \verb!latex! and \verb!pdflatex! accept images in different (exclusive) formats.  For \verb!latex! you may use EPS ou PS figures. For \verb!pdflatex! you may use JPG, PNG or PDF figures.  I strongly recommend you to use PDF figures in vectorial format (do not use bitmap images unless you have no other choice).
-% subsection dealing_with_images (end)
-
-
-\subsection{Creating Source Files Compatible with both latex and pdflatex} % (fold)
-\label{ssec:creating_source_files_compatible_with_both_latex_and_pdflatex}
-
-Do not include the extension of the file in the \verb!\includegraphics! command. E.g., use\\
-\verb!\includegraphics{sonwman}!\\
-and not\\
-\verb!\includegraphics{sonwman.eps}!.\\
-If you use the first form, \verb!latex! or \verb!pdflatex! will add an appropriate file extension.
-
-This means that, if you plan to use only \verb!pdflatex!, you need only to keep (preferably) a PDF version of all the images. If you plan to use also \verb!latex!, then you also need an EPS version of each image.
-% subsection creating_source_files_compatible_with_both_latex_and_pdflatex (end)
-
-% section generating_pdfs_from_latex (end)
-
-
-\newpage
-
-{\Large To be included in the sections above}\\
-
-Para fazer citações, deverá usar-se a chave da referência no ficheiro BibTeX. Se for uma única referência~\cite{Artho04}, usar um ``\verb!~!'' para ligar o \verb!\cite{...}! à palavra que o precede (\ldots\verb!referência~\cite{Artho04}!).  Caso queira fazer múltiplas citações~\cite{Shavit95,Silberschatz06,Moss85}, deverá agrupá-las dentro de um úinico \verb!\cite{...}!.
-
-Note que o ficheiro de bibliografia pode ter tantas entradas quantas quiser. Apenas aquelas cuja chave seja referenciada no texto é que serão incluidas na listagem de bibliografia.
-
-
-Footnotes\footnote{This is a simple footnote.} will be numbered and shown in the bottom of the page.
-
-
-A Tabela~\ref{tab:hla:results} ilustra alguns conceitos importantes associados à contrução de tabelas:
-\begin{asparaenum}[i)]
-	\item Não usar linhas verticais;
-	\item A legenda deve ficar por cima da tabela;
-	\item Usar as macros \verb!\toprule!, \verb!\midrule! e \verb!\bottomrule! para fazer a linha horizontal superior, interiores e inferior, respectivamente.
-\end{asparaenum}
+  \item \textbf{Missing not at random (MNAR):} These are data whose characteristics do not correspond to those of MCAR or MAR, so they fall into the category of Missing not at random (MNAR). The probability that an instance is missing depends on the value of the variable itself. These type of data are very problematic since the missingness is specifically related to what is missing, the only way to get an unbiased estimate of the parameters is to model the missing data, which requires a greater understanding and domain knowledge of the lost variables.
  
-\begin{table}[ht]
-	\caption{Test results summary.}
-	\label{tab:hla:results}
+\end{itemize}
+
+After understanding the differences between MACR, MAR and MNAR we are able to classify the type of missing data for our dataset. The data dictates information, specific characteristics of each mutation based on a set of features, each variable within each feature is independent of each other, i.e, there is no relationship of variables within the same feature. The type of information contained in features varies between float, int64, bool and object, thanks to this variety of data types and a huge discrepancy in the number of "NaN"\ in each feature (some with only 1 or 6 and others with 100\% or 80\% with ocupied with nan), the probability of a variable being dependent on another from a different feature is low. Nevertheless, since we are dealing with mutations from cancer cells, the fact that there is no information in a given feature may well be a consequence of the value (or what it represents) of another feature within the same mutation, for example, depending on the gene where the mutation was discovered, its representation in the data table may or may not have compromised values or have some data missing. Thus, the "NaN"\ are of the MAR type which means that some values can be predicted through other observed variables.
+
+However, in all, there is still a large percentage of missing data, in a data set with 1,253,880 cells of information 40.86\% of this information is occupied with "NaN"\ values which does not bring any additional information to our problem. With \textit{X.info(verbose = True, show\_counts = True)} it is possible to analyze in detail the data type of each feature, the number of non-null cells within each feature, among other information relative to the data set. The figure \ref{fig:missing_values} represents, in a downward manner, the number of null cells corresponding to each feature after applying the following lines of code: \textit{m = X.isna().sum().tolist()} and \textit{m.sort(reverse =True)}. 
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.9\textwidth,height=0.1\textheight]{Chapters/Figures/missing_values.png}
+    \caption{List of missing data from a given data set}
+    \label{fig:missing_values}
+\end{figure}
+
+
+ALTERAR URGENTE!!!!!! É MAR E NAO MCAR ALTERAR
+
+
+
+\subsection{Handling Missing Values} % (fold)
+\label{sec:document_structure}
+\hspace{10px}By determining the list of missing data for a specific data set, it becomes easier to see the percentage of missing data corresponding to each feature. The code below represents the calculation of that same percentage, each value is stored in the list \textit{mising\_ratio} in the same position where it is entered in the original list. When analyzing the percentages of \textit{missing\_ratio} we see that there is a huge discrepancy in the missing values, there are features with 100\%, 90\%, 86\%, 37\%, 10\% and even with 0.8\% and 0.6\% of missing values. Of course, some of these characteristics will not contribute or almost nothing to the analysis of values, namely the characteristics with 100\% and 90\%, it is difficult to estimate the remaining values without having additional information, hence the need to deal with these features.
+\begin{lstlisting}[language=Python]
+#percentage of missing data 
+    missing_ratio = []
+    for i in m:
+        value = (i/10449)*100
+        missing_ratio.append(value)
+    missing_ratio
+\end{lstlisting}
+
+Over the years, several methods have been presented to deal with missing values, these methods are separated into two main groups: deletion and imputation. Within the deletion group there are 3 most common methods: list-wise exclusion, pairwise exclusion and elimination (dropping) features. List-wise exclusion is the most used approach for dealing with missing data, it consists of omitting the cases where there is missing data and analyzing the remaining data. This approach, also known as complete-case analysis (CCA), only works if the sample is large enough and the missing data is of the MCAR type. Since our data is of the MAR type, this strategy is not recommended and a simple way to confirm this, by deleting all the lines where one or more values are missing, we quickly see that the data set is empty, because there is at least one missing value in each of the rows of the data set. As with list-wise exclusion, pairwise exclusion or available case analysis (ACA) is only recommended for missing data that are MCAR. In this case, only the missing observations will be ignored and the analysis is carried out on the remaining variables. Since pairwise exclusion uses all the observed information, it preserves more information than a list-wise. However, the analysis becomes deficient in the presence of too many missing observations and it becomes impossible to compare different analyzes (data sets) since only all available cases are considered. In the presence of too much missing data for a variable, a viable option would be to exclude the variable or column from the dataset given a certain threshold, eg 60\% or 90\%. This method is not advisable because a more adequate analysis of the data is necessary and there is some kind of improvement in the model's performance after the variable is excluded. However, for our problem at hand, this would be the most appropriate strategy. The presence of variables with 0\% information (100\% missing) can bring problems in future analysis, poor precision or false conclusions. The best way to deal with these variables would be to exclude all those that have all values with "NaN",\ \textit{pandas.DataFrame.dropna} is the method used to remove all missing values by adding the parameters \textit{axis = 1}, \textit{how = all}, and \textit{inplace=True} it is possible to exclude the columns with "NaN"\ in all row values.
+
+Unlike deletion approaches, the aim of imputation methods is to replace missing values with other reasonable values. The use of deletion approaches to discard samples (rows) or entire features (columns) causes loss of information, which is not always the intended solution, which makes imputation the most explored approach. Following the same structure, imputation techniques are divided into two subgroups: single imputation or multiple imputation. In single imputation, a single imputation value is generated for each of the missing variables. One of the disadvantages of this strategy is that the generated value is treated as the true value, ignoring the fact that no imputation method can provide the exact value, so single imputation does not reflect on the uncertainty of missing values. Most simple imputation methods follow three main procedures: replacement by existing values, replacement by statistical values, and replacement by represented values. The use of each of the strategies will depend on the type of values where they will be applied. Some only work on numeric values while others only work on numeric and nominal columns. Table \ref{table:1} bellow, succinctly shows the categorization of these strategies.
+
+\begin{table}[h!]
 \centering
-\begin{tabular}{lccccc}
-	\toprule
-	\multicolumn{1}{c}{\textbf{Test}} 	& \textbf{Anomalies}	& \textbf{Warnings}	& \textbf{Correct} 	& \textbf{Categories}		& \textbf{Missed} \\
-	\midrule
-\cite{Beckman08}~Connection 	& 2 & 2	& 1	& \emph{C}				& 1 \\
-\cite{Artho03}~Coordinates'03 	& 1	& 4	& 1	& \emph{2B, 1C}			& 0 \\
-\cite{Artho03}~Local Variable	& 1	& 2	& 1	& \emph{A}				& 0 \\
-\cite{Artho03}~NASA				& 1	& 1	& 1	& ---					& 0 \\
-\cite{Artho04}~Coordinates'04	& 1	& 4	& 1	& \emph{3C}				& 0 \\
-\cite{Artho04}~Buffer			& 0	& 7	& 0	& \emph{2A, 1B, 2C, 2D}	& 0 \\
-\cite{Artho04}~Double-Check		& 0	& 2	& 0	& \emph{1A, 1B}			& 0 \\
-\cite{Flanagan04}~StringBuffer	& 1	& 0	& 0	& ---					& 1 \\
-\cite{Praun03}~Account			& 1	& 1	& 1	& ---					& 0 \\
-\cite{Praun03}~Jigsaw			& 1	& 2	& 1	& \emph{C}				& 0 \\
-\cite{Praun03}~Over-reporting	& 0	& 2	& 0	& \emph{1A, 1C}			& 0 \\
-\cite{Praun03}~Under-reporting	& 1	& 1	& 1	& ---					& 0 \\
-\cite{IBM-Rep}~Allocate Vector	& 1	& 2	& 1	& \emph{C}				& 0 \\
-Knight Moves					& 1	& 3	& 1	& \emph{2B}				& 0 \\
-	\midrule
-	\textbf{Total}			& \textbf{12}		& \textbf{33}		& \textbf{10}			& \textbf{5A, 6B, 10C, 2D}	& \textbf{2} \\
-	\bottomrule
+\begin{center}
+\begin{tabular}{ | m{5.5em} | m{5cm}| m{5cm} | } 
+ \hline
+ \textbf{Replacement by:} & 	\textbf{For Numerical Features Only} & \textbf{For both Numerical and Nominal Features} \\ 
+ \hline
+ \textbf{Existing values} & Minimum/ Maximum & Previous/ Next/ Fixed value\\
+ \hline
+ \textbf{Statistical values} & Mean/ Median/ Mode, Linear / Average Interpolation & Most Frequent  value\\
+ \hline
+  \textbf{Represented values} & Regression Algorithms & Regression \& Classification Algorithms, k-Nearest Neighbours \\ 
+ \hline
 \end{tabular}
+\caption{Characterization of Single imputation methods}
+\label{table:1}
+\end{center}
 \end{table}
 
+In multiple imputation, as the name implies, several/multiple imputed values are generated for each of the missing observations, which means that many complete data sets with different imputed values are created. This is an imputation approach based on statistics and on the contrary of simple imputation methods, which have the disadvantage of not considering the uncertainty of the imputed values, which leads to the imputed values considered as real values, which in turn do not take into account the standard error causing bias in the results\cite{Azur}. Multiple imputation creates multiple "complete"\ data sets capable of filling in the missing values multiple times. The best known algorithm is Chained Equation Multiple Imputation (MICE). However, this strategy is not always the best, the fact that multiple datasets are created can lead to an increase in algorithm complexity and memory problems.
 
-As figuras a inserir no documento deverão ser de qualidade, preferencialmente em formato vectorial (PDF vectorial) e não em \emph{bitmap} (PNG, JPG, etc). As imagens \emph{bitmap} (Figura~\ref{fig:Figuras_Tree_silhouettes-bitmap}) não escalam bem e têm reflexos negativos na qualidade do seu documento.  Pelo contrário, as imagens \emph{vectoriais} {Figura~\ref{fig:Figuras_Tree_silhouettes-vectorial}} escalam muito tanto quanto o necessário sem degradar a qualidade da imagem.
+To make data analysis and processing easier, the chosen approach was to create functions that analyze sections of the data set. In this case, only columns with values of type float were chosen, since they have the largest number of NaN values, they require greater care and special attention. The \textit{manipulate\_nan\_values} function, shown below, shows the process of eliminating the columns that are below a given threshold and then replacing the "NaN" values in the remaining columns with the average of the values in that same column.
 
-Só deve usar \emph{screenshots} se não tive mesmo nenhuma alternativa.  Em vez e gerar um \emph{screenshot}, tente usar uma impressora virtual PDF e imprimir para um ficheiro PDF. Regra geral obterá um PDF vetorial. Mesmo que o seu PDF contenha imagens, elas terão sempre qualidade maior ou igual à que obteria com um \emph{screenshot}.
+\begin{lstlisting}[language=Python]
+#Handling NaN in float cloumns that are below threshold 0.70(70%)
+    def handle_nan_values(X):
+        length = len(Y)
+        threshold = length*0.70
+        m = X[X.columns[X.dtypes == float]]
+        m = m.dropna(axis=1,thresh=int(threshold)).fillna(m.mean())
+        X = X.drop(X.columns[X.dtypes == float], axis=1)
+        X = pd.concat([X,m], axis=1)
+        return X
+delete_nan_values(X)
+\end{lstlisting}
 
+The threshold chosen was 70\%, that is, only columns of the float type that contain at least 70\% of information are preserved (this calculation is done by the number of lines of each data set, for example, 10449 lines then the threshold would be 10449*0.7), the choice of this value is due to the fact that these columns contain little or no information, of the 21 columns with float values only 1 contains 90\% of information and only 2 are above 70\% as The remainder fall in the range of 10\% or less making it almost impossible to accurately predict the remaining missing values. The calculation of the NaN values of the two chosen columns was done through the average of the values of each one of the columns, having the benefit of not changing the sample mean for this variable. The result of the function will be a clean and filtered data set, almost ready to apply the algorithms.
 
-\begin{figure}[htbp]
-	\centering
-	\includegraphics[height=1in]{snowman-bitmap}
-	\includegraphics[height=3in]{snowman-bitmap}
-	\includegraphics[height=6in]{snowman-bitmap}
-	\caption{Imagem em formato \emph{bitmap} (JPG)}
-	\label{fig:Figuras_Tree_silhouettes-bitmap}
-\end{figure}
+\section{Categorical Features} % (fold)
+\label{sec:dealing_with_bibliography}
+\hspace{10px}The next step will be to deal with categorical resources. As machine learning models use mathematical equations categorical data are not accepted, therefore, it is necessary to convert them to integers. There are currently only 2 ways to do this, using the Label Encoding or One Hot Encoding method. The big difference between the two methods is that unlike One Hot Encoding which creates a column for each categorical value and this column has a value of 1 if this value exists in the initial data otherwise it will be 0, in Label Encoder the categorical values themselves are converted to numeric labels.
+The lack of creating additional columns makes Label Encoding the ideal method to apply in our data set. The creation of new columns only leads to an exponential increase in the size of the data set from 9.5MB to more than 2.5GB of information which makes the application of feature extraction and selection algorithms costly on a temporal and spatial level.
 
-\begin{figure}[htbp]
-	\centering
-	\includegraphics[height=1in]{snowman-vectorial}
-	\includegraphics[height=3in]{snowman-vectorial}
-	\includegraphics[height=6in]{snowman-vectorial}
-	\caption{Imagem em formato PDF vectorial}
-	\label{fig:Figuras_Tree_silhouettes-vectorial}
-\end{figure}
+\begin{lstlisting}[language=Python]
+    #Handling categorical values for variable X
+    def handle_categ_values(X):
+        labelencoder_x = LabelEncoder()
+        m = X.columns[X.dtypes == object]
+        for n in m:
+            X[n] = labelencoder_x.fit_transform(X[n])
+        m = X.columns[X.dtypes == bool]
+        for n in m:
+            X[n] = labelencoder_x.fit_transform(X[n])    
+        return X
+    #Handling categorical values for variable Y
+    labelencoder_y= LabelEncoder()  
+    Y = labelencoder_y.fit_transform(Y)
+\end{lstlisting}
 
-Para agregar várias figuras numa única… Poderá assim referenciar o conjunto como Figura~\ref{fig:figura-completa} ou as sub-figuras separadamente como~\ref{fig:novelo} e~\ref{fig:nuvem}.
+The code above describes the application of the Label Encoder method for the X and Y variables mentioned above. Here, a \textit{LabelEncoder} object is instantiated, the \textit{fit\_transform} method makes the \textit{LabelEncoder} fit the desired column and proceeds with its transformation and application, it is the simplified way to apply first the \textit{fit} method and then the \textit{transform} method. Applying the \textit{info} method to both X and Y shows us that the categorical values, in this case object and boolean, have all been converted to integer values and are ready for the next step of data preprocessing.
 
+\section{Train-Test Split} % (fold)
+\label{sec:importing_images}
+\hspace{10px}The train-test split procedure is one of the most important steps in machine learning. It is mainly used to estimate the performance of machine learning algorithms when they are used to create results on unused data to train the model. It's a quick and easy-to-run procedure, whose results allow you to compare the performance of machine learning algorithms for predictive modeling problems.
 
-\begin{figure}[htbp]
-	\centering
-    \subbottom[Novelo de lã]{%
-		\label{fig:novelo}
-		\includegraphics[height=1in]{knitting-vectorial}
-    }
-\qquad\qquad
-    \subbottom[Tempestade com neve]{%
-		\label{fig:nuvem}
-		\includegraphics[height=1in]{snowstorm-vectorial}
-    }
-  \caption{Exemplo de utilização de \emph{subbottom}}
-  \label{fig:figura-completa}
-\end{figure}
+Train-test, as the name implies, is to convert or split the original data set into 2 subsets the test and the training, where the training data set is used to fit the machine learning model and the test data set is used to later evaluate this same model.
 
-\section{Equações}
-
-O LaTeX é uma ferramenta poderosa para escrever em estilo matemático. Permite inserir fórmulas no meio do texto como por exemplo esta: $ax^2 + bx + c = 0$. Também permite que as fórmulas sejam destacadas numa linha separada e centradas na página 
-$$x = \frac{-b \pm \sqrt{b^2-4ac}}{2a}$$
-\[x = \frac{-b \pm \sqrt{b^2-4ac}}{2a}\]
-ou numeradas 
-\begin{equation}
-aaa
-\label{eq:1}
-\end{equation}
-que depois pode ser referida no texto como sendo a equação~\ref{eq:1}
-$$\begin{array}{l}
-aa
-\end{array}
-$$
-
-\begin{eqnarray}
-a\\
-b\\
-c\\
-\end{eqnarray}
+The scikit-learn library provides a built-in function named train\_test\_split. For this function, X and Y were passed-in as arguments which splits X and Y with a 30\% of testing data and 70\% of training data, successfully split between X\_train, X\_test, y\_train, and y\_test with a \textit{random\_state} of 42.
 
 
-% \printbibliography[heading=subbibliography, segment=\therefsegment, title={\bibname\ for chapter~\thechapter}]
+\section{Features Scaling} % (fold)
+\label{sec:inserting_tables}
+\hspace{10px} This is the last step of data pre-processing, which is the normalization of the data set. The purpose of data normalization is to convert all values to a common scale without distorting the difference between the range of each values. It has been proven by experimentation that the Machine Learning and Deep Learning Models perform better with a normalized dataset than with a non-normalized dataset. Standard Scaler and Normalization are the 2 possible ways to normalize the data. The process of using StandardScaler is simpler than Normalization however they are very similar.
+
+By importing StandardScaler from the  sklearn.preprocessing libary and similar to LabelEncoding method only this time the StandardScaler.fit\_transform will be apply on our x\_train data set
