@@ -55,12 +55,10 @@ However, in all, there is still a large percentage of missing data, in a data se
 \end{figure}
 
 
-ALTERAR URGENTE!!!!!! É MAR E NAO MCAR ALTERAR
-
 
 
 \subsection{Handling Missing Values} % (fold)
-\label{sec:document_structure}
+\label{sec:handling_missing values}
 \hspace{10px}By determining the list of missing data for a specific data set, it becomes easier to see the percentage of missing data corresponding to each feature. The code below represents the calculation of that same percentage, each value is stored in the list \textit{mising\_ratio} in the same position where it is entered in the original list. When analyzing the percentages of \textit{missing\_ratio} we see that there is a huge discrepancy in the missing values, there are features with 100\%, 90\%, 86\%, 37\%, 10\% and even with 0.8\% and 0.6\% of missing values. Of course, some of these characteristics will not contribute or almost nothing to the analysis of values, namely the characteristics with 100\% and 90\%, it is difficult to estimate the remaining values without having additional information, hence the need to deal with these features.
 \begin{lstlisting}[language=Python]
 #percentage of missing data 
@@ -107,46 +105,59 @@ To make data analysis and processing easier, the chosen approach was to create f
         m = m.dropna(axis=1,thresh=int(threshold)).fillna(m.mean())
         X = X.drop(X.columns[X.dtypes == float], axis=1)
         X = pd.concat([X,m], axis=1)
+        
+        #fill nan with value "Unkown"
+        X = X.fillna(value = "Unkown")
         return X
-delete_nan_values(X)
 \end{lstlisting}
+%#fill nan values with most common in columns of type obj         obj_columns = X.columns[X.dtypes == object]        X[obj_columns] = X[obj_columns].fillna(method="pad")
+\hspace{10px} The threshold chosen was 70\%, that is, only columns of the float type that contain at least 70\% of information are preserved (this calculation is done by the number of lines of each data set, for example, 10449 lines then the threshold would be 10449*0.7), the choice of this value is due to the fact that these columns contain little or no information, of the 21 columns with float values only 1 contains 90\% of information and only 2 are above 70\% as The remainder fall in the range of 10\% or less making it almost impossible to accurately predict the remaining missing values. The calculation of the NaN values of the two chosen columns was done through the average of the values of each one of the columns, having the benefit of not changing the sample mean for this variable. After that, all that remains is to deal with the NaN values in the object type columns.
 
-The threshold chosen was 70\%, that is, only columns of the float type that contain at least 70\% of information are preserved (this calculation is done by the number of lines of each data set, for example, 10449 lines then the threshold would be 10449*0.7), the choice of this value is due to the fact that these columns contain little or no information, of the 21 columns with float values only 1 contains 90\% of information and only 2 are above 70\% as The remainder fall in the range of 10\% or less making it almost impossible to accurately predict the remaining missing values. The calculation of the NaN values of the two chosen columns was done through the average of the values of each one of the columns, having the benefit of not changing the sample mean for this variable. The result of the function will be a clean and filtered data set, almost ready to apply the algorithms.
+Similar to the previous process, these values will be replaced by the last valid observation until it reaches the next valid value within each column ("pad" method as forward replacement). However, the pad method as well as ffill method only do forward value replacement starting at the first valid value (other than NaN) and if there is any NaN value at the beginning of the column these are ignored by the method and remain untreated. Another problem with these methods is that in the presence of a feature with only one valid value, all other values would be replaced by this one, making this feature biased, thus manipulating the result to select this feature. And depending on the position of the first valid value, these methods may or may not work. 
+
+As the number of NaN values, up to this point, is reduced or non-existent, the best solution found is to fill these values with the value "Unkown", which already being recognized by the python language makes it possible, later on, transform these categorical variables into numerical variables without losing the original feature information and without adding estimated values that could bring bias to the data set.
+The result of this function will be a clean and filtered data set, almost ready to apply the algorithms.
 
 \section{Categorical Features} % (fold)
-\label{sec:dealing_with_bibliography}
-\hspace{10px}The next step will be to deal with categorical resources. As machine learning models use mathematical equations categorical data are not accepted, therefore, it is necessary to convert them to integers. There are currently only 2 ways to do this, using the Label Encoding or One Hot Encoding method. The big difference between the two methods is that unlike One Hot Encoding which creates a column for each categorical value and this column has a value of 1 if this value exists in the initial data otherwise it will be 0, in Label Encoder the categorical values themselves are converted to numeric labels.
+\label{sec:categorical_values}
+\hspace{10px}The next step will be to deal with categorical features. As machine learning models use mathematical equations categorical data are not accepted, therefore, it is necessary to convert them to integers. There are currently only 2 ways to do this, using the Label Encoding or One Hot Encoding method. The big difference between the two methods is that unlike One Hot Encoding which creates a column for each categorical value and this column has a value of 1 if this value exists in the initial data otherwise it will be 0, in Label Encoder the categorical values themselves are converted to numeric labels.
 The lack of creating additional columns makes Label Encoding the ideal method to apply in our data set. The creation of new columns only leads to an exponential increase in the size of the data set from 9.5MB to more than 2.5GB of information which makes the application of feature extraction and selection algorithms costly on a temporal and spatial level.
 
 \begin{lstlisting}[language=Python]
     #Handling categorical values for variable X
     def handle_categ_values(X):
         labelencoder_x = LabelEncoder()
-        m = X.columns[X.dtypes == object]
+        m = X.columns
         for n in m:
-            X[n] = labelencoder_x.fit_transform(X[n])
-        m = X.columns[X.dtypes == bool]
-        for n in m:
-            X[n] = labelencoder_x.fit_transform(X[n])    
+            X[n] = labelencoder_x.fit_transform(X[n].astype(str))  
         return X
+        
     #Handling categorical values for variable Y
     labelencoder_y= LabelEncoder()  
     Y = labelencoder_y.fit_transform(Y)
 \end{lstlisting}
 
-The code above describes the application of the Label Encoder method for the X and Y variables mentioned above. Here, a \textit{LabelEncoder} object is instantiated, the \textit{fit\_transform} method makes the \textit{LabelEncoder} fit the desired column and proceeds with its transformation and application, it is the simplified way to apply first the \textit{fit} method and then the \textit{transform} method. Applying the \textit{info} method to both X and Y shows us that the categorical values, in this case object and boolean, have all been converted to integer values and are ready for the next step of data preprocessing.
+The code above describes the application of the Label Encoder method for the X and Y variables mentioned above. Here, a \textit{LabelEncoder} object is instantiated, the \textit{fit\_transform} method makes the \textit{LabelEncoder} fit the desired column and proceeds with its transformation and application, it is the simplified way to apply first the \textit{fit} method and then the \textit{transform} method. Applying the \textit{info} method to both X and Y shows us that the categorical values, in this case object and boolean, have all been converted to integer values and are ready for the next step of data preprocessing. To ensure that all data in X are of the same type, method \textit{fit\_transform} is applied to all columns of the data set.
 
 \section{Train-Test Split} % (fold)
-\label{sec:importing_images}
-\hspace{10px}The train-test split procedure is one of the most important steps in machine learning. It is mainly used to estimate the performance of machine learning algorithms when they are used to create results on unused data to train the model. It's a quick and easy-to-run procedure, whose results allow you to compare the performance of machine learning algorithms for predictive modeling problems.
+\label{sec:test_train_split}
+\hspace{10px}Although the procedure of separating data into train data and test data is one of the most important steps in machine learning, to fulfill our goal, this step will only be applied after using feature selection and extraction algorithms. These algorithms can only be applied to the original data set and before any separation of the data into testing data and training data, if this does not happen, null values will reappear and it becomes more difficult to treat them in the middle of the algorithm implementation. The train-test split procedure is mainly used to estimate the performance of machine learning algorithms when they are used to create results on unused data to train the model. It's a quick and easy-to-run procedure, whose results allows you to compare the performance of machine learning algorithms for predictive modeling problems.
 
 Train-test, as the name implies, is to convert or split the original data set into 2 subsets the test and the training, where the training data set is used to fit the machine learning model and the test data set is used to later evaluate this same model.
 
-The scikit-learn library provides a built-in function named train\_test\_split. For this function, X and Y were passed-in as arguments which splits X and Y with a 30\% of testing data and 70\% of training data, successfully split between X\_train, X\_test, y\_train, and y\_test with a \textit{random\_state} of 42.
+The scikit-learn library provides a built-in function named train\_test\_split. For this function, X and Y will be passed-in as arguments which splits X and Y with a, let's say 30\% of testing data and 70\% of training data, successfully splitting between X\_train, X\_test, Y\_train, and Y\_test with a \textit{random\_state} of 42.
 
 
 \section{Features Scaling} % (fold)
-\label{sec:inserting_tables}
-\hspace{10px} This is the last step of data pre-processing, which is the normalization of the data set. The purpose of data normalization is to convert all values to a common scale without distorting the difference between the range of each values. It has been proven by experimentation that the Machine Learning and Deep Learning Models perform better with a normalized dataset than with a non-normalized dataset. Standard Scaler and Normalization are the 2 possible ways to normalize the data. The process of using StandardScaler is simpler than Normalization however they are very similar.
+\label{sec:feature_scaling}
+\hspace{10px} This is the last step of data pre-processing, which is the normalization of the data set. The purpose of data normalization is to convert all values to a common scale without distorting the difference between the range of each values. It has been proven by experimentation that the Machine Learning and Deep Learning Models perform better with a normalized dataset than with a non-normalized dataset. Standard Scaler and Normalization are the 2 possible ways to normalize the data. Both StandardScaler and Normalization are very similar, however StandardScaler is simpler to apply than Normalization.
 
-By importing StandardScaler from the  sklearn.preprocessing libary and similar to LabelEncoding method only this time the StandardScaler.fit\_transform will be apply on our x\_train data set
+By importing StandardScaler from the  sklearn.preprocessing libary, similar to LabelEncoding method, only this time the StandardScaler.fit\_transform will be apply on our X data set. After applying all the data preprocessing steps, the data set will be similar to Figure \ref{fig:xtrain_data} and ready to be used in the algorithms described in the following chapters.
+
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.7\textwidth,height=0.17\textheight]{Chapters/Figures/X_train.png}
+    \caption{Normalized X data}
+    \label{fig:xtrain_data}
+\end{figure}
