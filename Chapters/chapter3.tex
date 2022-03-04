@@ -98,29 +98,45 @@ To make data analysis and processing easier, the chosen approach was to create f
 
 \begin{lstlisting}[language=Python]
 def handle_nan_values(X):
-
-  #Remove columns with all row values NaN
-  X.dropna(axis=1, how="all", inplace = True)
     
-  #Remove columns that are below treshold 0.70(70%)
-  length = len(X)
-  thresh = length*0.70
-  X.dropna(axis=1, thresh=int(thresh), inplace = True)
+    MC3_replace = {"Unknown": False,"False":False,"True":True}
+    CAN_replace = {np.nan: "NO"}
+    PICK_replace = {np.nan: 0.0}
+    PHENO_replace = {np.nan: "trait","1":"disease","0":"phenotype"}
+    MINI_replace = {np.nan:0}
+    GENE_PHENO_replace = {np.nan:2}
     
-  #Apply imputation algorithm to fill remaining nan values
-  nan_columns = X.loc[:, X.isna().any()].columns
-  for n in nan_columns:
-      if X[n].dtypes == object:
-          imputer = SimpleImputer(missing_values=np.NaN, 
-                                    strategy='most_frequent')
-          X[n] = imputer.fit_transform(X[n].values.reshape(-1,1))
-      else:
-          imputer = SimpleImputer(missing_values=np.NaN, 
-                                    strategy="mean")
-          X[n] = imputer.fit_transform(X[n].values.reshape(-1,1))
-  return X
+    #Handle nullvalues in specific columns
+    X["CANONICAL"] = X["CANONICAL"].replace(CAN_replace)
+    X["PICK"] = X["PICK"].replace(PICK_replace)
+    X["PHENO"] = np.where((X.PHENO == "1;0"), "NaN", X.PHENO)
+    X["PHENO"] = X["PHENO"].replace(PHENO_replace)
+    X["MINIMISED"] = X["MINIMISED"].replace(MINI_replace)
+    X["GENE_PHENO"] = X["GENE_PHENO"].replace(GENE_PHENO_replace)
+    
+    #Handle mixed types in MC3_Overlap column
+    if X["MC3_Overlap"].dtype == "object":
+        X["MC3_Overlap"] = X["MC3_Overlap"].replace(MC3_replace)
+    
+    
+    #Remove columns with all rows values as null
+    X.dropna(axis=1,how="all", inplace = True)
+    
+    #Remove columns that are below treshold 0.70(70%)
+    length = len(Y)
+    thresh = length*0.70
+    X.dropna(axis=1,thresh=int(thresh), inplace = True)
+         
+    #Fill remaining null values
+    cateogry_columns = X.select_dtypes("object").columns
+    for column in X.columns:
+        if X[column].isnull().any():
+            if(column in cateogry_columns):
+                X[column] = X[column].fillna("NaN")
+            else:
+                X[column] = X[column].fillna(0)
+    return X
 \end{lstlisting}
-
 \hspace{10px} As a first step, the columns that have all their values as NaN are removed, as they do not contribute any additional information, are considered as noisy data or meaningless data, which are not able to be read or used by the programs and algorithms. Then, we proceeded to the selection of a limit for the minimum number of useful information contained in each column. The threshold chosen was 70\%, that is, only columns that contain at least 70\% of information are preserved (this calculation is done by the number of lines of each data set, for example, 10449 lines then the threshold would be 10449*0.7), the choice of this value is due to the fact that most of these columns contain little or no information, for example of the 21 columns with float values only 1 contains 90\% of information and only 2 are above 70\% as the remainder fall in the range of 10\% or less making it almost impossible to accurately predict the remaining missing values. 
 
 The calculation of the NaN values for columns of types different than type object was done through the use of a imputation technique. From \textit{sklearn.impute} we use the SimpleImputer with a strategy of \textit{mean} which replaces the missing values using the mean along each column. This has the benefit of not changing the sample mean for each column. After that, all that remains is to deal with the NaN values in the object type columns.
@@ -137,13 +153,15 @@ A piece of code extracted from \href{https://chrisalbon.com/code/machine_learnin
 
 \begin{lstlisting}[language=Python]
 def get_correlated_cols(X):
+
     # Create correlation matrix
     corr_matrix = X.corr().abs()
 
     # Select upper triangle of correlation matrix
     upper = corr_matrix.where(np.triu(np.ones(corr_matrix.shape),
             k=1).astype(bool))
-            
+           
+           
     # Find index of feature columns with correlation greater than 0.95
     for column in upper.columns:
         if any(upper[column] > 0.95):
@@ -162,24 +180,25 @@ Identifying and removing or merging these duplicate data set features will creat
 
 \begin{lstlisting}[language=Python]
 def get_duplicated_value_cols(X):
+    
     count = 0
     deleted = 0
+    columns_not_accepted = {"Exon_Number","Transcript_ID",
+                            "Allele","Reference_Allele"}
     
     #get matrix of duplicated columns
     duplicated_columns = X.T[X.T.duplicated(keep=False)].T.columns
+    print(duplicated_columns)
     
     #remove duplicated columns
     for col in duplicated_columns:
-        if col == "EXON":
-            X.drop(col,axis=1, inplace = True)
-            deleted += 1
-        elif col == "Feature":
-            X.drop(col,axis=1, inplace = True)
-            deleted += 1
-        elif col =="Reference_Allele":
-            X.drop(col,axis=1, inplace = True)
-            deleted += 1
+        #if col in columns_not_accepted: 
+        X.drop(col,axis=1, inplace = True)
+        deleted += 1
         count += 1
+        
+    print("Columns with duplicated values:", count)
+    print("Columns deleted:", deleted)
     return X
 \end{lstlisting}
 
@@ -190,17 +209,19 @@ Now, finally, it is necessary to find the features where the majority share of t
 \begin{lstlisting}[language=Python]
 def get_similar_value_cols(X):
     thresh = 90
+    number_of_cols = 0
     similar_values = []
-    
+       
     for c in X.columns:
         #percentage of each value inside columns
         percent_vals = (X[c].value_counts()/len(X)*100).values
         
-        
-        #filter columns where more than 90% values are similar
-        if percent_vals[0] > thresh and len(percent_vals) > 2:
+        #filter columns where more than 90% values are same
+        if percent_vals[0] >= thresh:
             similar_values.append(c)
-    return similar_values
+            number_of_cols += 1 
+            
+  return similar_values
 \end{lstlisting}
 
 \section{Outliers} % (fold)
@@ -212,7 +233,7 @@ However, it is very difficult to define and identify outliers in general because
 Since our results are critical, identify which mutation is a driver mutation, even the smallest of changes in the data set will make a difference. Sometimes these changes can be legitimate observations and the reason why this specific mutation was selected as a driver mutation. Another reason not to remove outliers is if there is a large number of outliers in the data set. Outliers are rare, so if a data set has, lets say, 20\% are outliers means that there's something of interest within the data set that requires further analysis. One way to check this is to perform the \textbf{Z-Score} test where the z value is between -3 and 3 and all values that fall outside this range are considered outliers. After performing this test the result was 2046 values considered as outliers
 which corresponds to 20\% of our data set. 
 
-In this situation, it is not recommended to discard outliers and the analysis should be run both with and without them. This time the analysis of the algorithms will be perform only with the outliers.
+In this situation, it is not recommended to discard outliers but nevertheless the analysis should be run both with and without them. This time the analysis of the algorithms will be perform only with the outliers.
 
 \section{Categorical Features} % (fold)
 \label{sec:categorical_values}
@@ -220,20 +241,18 @@ In this situation, it is not recommended to discard outliers and the analysis sh
 The lack of creating additional columns makes Label Encoding the ideal method to apply in our data set. The creation of new columns only leads to an exponential increase in the size of the data set from 9.5MB to more than 2.5GB of information which makes the application of feature extraction and selection algorithms costly on a temporal and spatial level.
 
 \begin{lstlisting}[language=Python]
-    #Handling categorical values for variable X
-    def handle_categ_values(X):
-        labelencoder_x = LabelEncoder()
+#Handling categorical values
+def handle_categ_values(X):
+    labelencoder_x = LabelEncoder()
+    
+    #Execute LabelEncoder for each categorical column
+    for n in X.columns:
+        X[n] = labelencoder_x.fit_transform(X[n])
+    return X
         
-        #Execute LabelEncoder for each categorical column
-        for n in X.columns:
-            if X[n].dtype != int:
-                X[n] = labelencoder_x.fit_transform(X[n])
-                
-        return X
-        
-    #Handling categorical values for variable Y
-    labelencoder_y= LabelEncoder()  
-    Y = labelencoder_y.fit_transform(Y)
+ #Handling categorical values for variable Y
+ labelencoder_y= LabelEncoder()  
+ Y = labelencoder_y.fit_transform(Y)
 \end{lstlisting}
 
 The code above describes the application of the Label Encoder method for the X and Y variables mentioned above. Here, a \textit{LabelEncoder} object is instantiated, the \textit{fit\_transform} method makes the \textit{LabelEncoder} fit the desired column and proceeds with its transformation and application, it is the simplified way to apply first the \textit{fit} method and then the \textit{transform} method. Applying the \textit{info} method to both X and Y shows us that the categorical values, in this case object and boolean, have all been converted to integer values and are ready for the next step of data preprocessing. To ensure that all data in X are of the same type, method \textit{fit\_transform} is applied to all columns of the data set.
