@@ -78,24 +78,18 @@ The variable "header"\ stores the header of the data set, it contains the creati
     \label{fig:dataset}
 \end{figure}
 
-First and foremost, it is necessary to extract the independent variables and the dependent variables. Independent variables are all variables that are changed or controlled during a scientific experiment in order to test the effects on the dependent variables, so for our data set the independent variables will be "Hugo\_Symbol"\ and "Entrez\_Gene\_Id ", as they represent the identification of each mutation. On the other hand, the dependent variables are those that are tested and measured during the scientific experiment, that is, they will be the remaining columns of the data set, aka features. The code below shows the steps necessary to extract the two types of variables, Y being the independent variable and X the dependent variables. The focus will be on the variable "Entrez\_Gene\_Id"\ as the sole independent variable, being an integer variable it is easier and less laborious to preprocess it before applying the algorithms, "Hugo\_Symbol"\ will only be used for future validation if necessary.
+First and foremost, it is necessary to extract the independent variables and the dependent variables. Independent variables are all variables that are changed or controlled during a scientific experiment in order to test the effects on the dependent variables, so for our data set the independent variables will be "IMPACT"\ and "Chromosome", as the first represents the type of impact that each mutation can have: HIGH - mutation assumed to have high disruptive impact in the protein, causes protein truncation and
+loss of function; MODERATE - A non-disruptive mutation that might change protein effectiveness; LOW - assumed to be mostly harmless, unlikely to change protein behavior; MODIFIER - Usually non-coding mutations or mutations affecting non-coding genes, where predictions are difficult or there is no evidence of impact; and the second the id of the respective affected chromosome. On the other hand, the dependent variables are those that are tested and measured during the scientific experiment, that is, they will be the remaining columns of the data set, aka features. The code below shows the steps necessary to extract the two types of variables, Y being the independent variable and X the dependent variables. The focus will be on the variable "IMPACT"\ as the sole independent variable it is easier and less laborious to preprocess it before applying the algorithms, "Chromosome"\ will only be used for future validation and improved visualization of the resultant data set.
 
 \begin{lstlisting}[language=Python]
 #independent variables 
-    Hugo_Symbol = table.loc[:,["Hugo_Symbol"]]
-    Y = table.loc[:,["Entrez_Gene_Id"]]
+    Chromosome = table["Chromosome"]
+    Y = table["IMPACT"]
 \end{lstlisting}
-%%%
-%%\begin{figure}[h]
-   % \centering
-    %\includegraphics[width=0.4\textwidth,height=0.14\textheight]{Chapters/Figures/Y_var.png}
-    %\caption{Y values}
-    %\label{fig:Y_var}
-%%\end{figure}
 
 \begin{lstlisting}[language=Python]
 #dependent variables
-    X = table.drop(["Hugo_Symbol","Entrez_Gene_Id"], axis = 1)
+    X = table.drop(["IMPACT","Chromosome"], axis = 1)
 \end{lstlisting}
 %%%\begin{figure}[h]
     %\centering

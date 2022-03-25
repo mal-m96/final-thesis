@@ -94,7 +94,7 @@ Unlike deletion approaches, the aim of imputation methods is to fill the missing
 
 In multiple imputation, as the name implies, several/multiple imputed values are generated for each of the missing observations, meaning that several data sets with different imputation values are created. This is an imputation approach based on statistics and on the contrary of simple imputation methods, which have the disadvantage of not considering the uncertainty of the imputed values, which leads to the imputed values considered as real values, which in turn do not take into account the standard error causing bias in the results\cite{Azur}. Multiple imputation creates multiple "complete"\ data sets capable of filling in the missing values multiple times. The best known algorithm is Chained Equation Multiple Imputation (MICE). However, this strategy is not always the best, the fact that multiple datasets are created can lead to an increase in algorithm complexity and memory problems.
 
-To make data analysis and processing easier, the chosen approach was to create functions that analyze sections of the data set. In this case, only columns with values of type float were chosen, since they have the largest number of NaN values, they require greater care and special attention. The \textit{handle\_nan\_values} function, shown below, represents the process of eliminating the columns that are below a given threshold and applying a imputation technique to fill the remaining NaN values present in the columns, with a \textit{mean} or \textit{most\_frequent} strategy depending on the type of data to be applied.
+To make data analysis and processing easier, the chosen approach was to create functions that analyze sections of the data set. The \textit{handle\_nan\_values} function, shown below, demonstrates all the necessary steps to deal with the entire missing information within a data set. After further analysis of different datasets and the GDC Data User's Guide, it became clear that some columns would require a more detailed approach. According to the User's Guide, some columns had their values, initially strings, being represented by int values like 0 , 1 or null for a better simplicity, but at the same time they are assigned the value null which for any programming language means nonexistent. The first step will be to deal with the wrong representation of these values, followed by elimination of columns based on their number of null values and finally filling the remaining NaN values.
 
 \begin{lstlisting}[language=Python]
 def handle_nan_values(X):
@@ -106,13 +106,14 @@ def handle_nan_values(X):
     MINI_replace = {np.nan:0}
     GENE_PHENO_replace = {np.nan:2}
     
-    #Handle nullvalues in specific columns
+    #Handle null values in specific columns
     X["CANONICAL"] = X["CANONICAL"].replace(CAN_replace)
     X["PICK"] = X["PICK"].replace(PICK_replace)
     X["PHENO"] = np.where((X.PHENO == "1;0"), "NaN", X.PHENO)
     X["PHENO"] = X["PHENO"].replace(PHENO_replace)
     X["MINIMISED"] = X["MINIMISED"].replace(MINI_replace)
     X["GENE_PHENO"] = X["GENE_PHENO"].replace(GENE_PHENO_replace)
+    
     
     #Handle mixed types in MC3_Overlap column
     if X["MC3_Overlap"].dtype == "object":
@@ -137,11 +138,16 @@ def handle_nan_values(X):
                 X[column] = X[column].fillna(0)
     return X
 \end{lstlisting}
-\hspace{10px} As a first step, the columns that have all their values as NaN are removed, as they do not contribute any additional information, are considered as noisy data or meaningless data, which are not able to be read or used by the programs and algorithms. Then, we proceeded to the selection of a limit for the minimum number of useful information contained in each column. The threshold chosen was 70\%, that is, only columns that contain at least 70\% of information are preserved (this calculation is done by the number of lines of each data set, for example, 10449 lines then the threshold would be 10449*0.7), the choice of this value is due to the fact that most of these columns contain little or no information, for example of the 21 columns with float values only 1 contains 90\% of information and only 2 are above 70\% as the remainder fall in the range of 10\% or less making it almost impossible to accurately predict the remaining missing values. 
+\hspace{10px} As the second step, the columns that have all their values as NaN are removed, as they do not contribute any additional information, are considered as noisy data or meaningless data, which are not able to be read or used by the programs and algorithms. Then, we proceeded to the selection of a limit for the minimum number of useful information contained in each column. The threshold chosen was 70\%, that is, only columns that contain at least 70\% of information are preserved (this calculation is done by the number of lines of each data set, for example, 10449 lines then the threshold would be 10449*0.7), the choice of this value is due to the fact that most of these columns contain little or no information, for example of the 21 columns with float values only 1 contains 90\% of information and only 2 are above 70\% as the remainder fall in the range of 10\% or less making it almost impossible to accurately predict the remaining missing values. 
 
-The calculation of the NaN values for columns of types different than type object was done through the use of a imputation technique. From \textit{sklearn.impute} we use the SimpleImputer with a strategy of \textit{mean} which replaces the missing values using the mean along each column. This has the benefit of not changing the sample mean for each column. After that, all that remains is to deal with the NaN values in the object type columns.
 
-Initially the replacement was done through existing values using the \textit{pad} method also known as forward replacement, where the last valid observation is used as the replacement value, until reaching the next valid value within each column. However, this method as well as ffill method only do forward value replacement starting at the first valid value (other than NaN) and if there is any NaN value at the beginning of the column these are ignored by the method and remain untreated, the same applies to bfill or backfill that propagate the valid values backwards. Another problem with these methods is that in the presence of a feature with only one valid value, all other values would be replaced by this one, making this feature biased, thus manipulating the result into favoring this feature. And depending on the position of the first valid value, these methods may or may not work. Therefore, the best solution was to apply the same imputation technique used for the other value types, only this time with the \textit{most\_frequent} strategy as strategy \textit{mean} or \textit{median} don't work with object type values.
+
+Finally, the calculation of the NaN values for columns of types different than type object was originally done through the use of a imputation technique. From \textit{sklearn.impute} we use the SimpleImputer with a strategy of \textit{mean} which replaces the missing values using the mean along each column. This has the benefit of not changing the sample mean for each column. After that, all that remains is to deal with the NaN values in the object type columns.
+
+Initially the replacement was done through existing values using the \textit{pad} method also known as forward replacement, where the last valid observation is used as the replacement value, until reaching the next valid value within each column. However, this method as well as ffill method only do forward value replacement starting at the first valid value (other than NaN) and if there is any NaN value at the beginning of the column these are ignored by the method and remain untreated, the same applies to bfill or backfill that propagate the valid values backwards. Another problem with these methods is that in the presence of a feature with only one valid value, all other values would be replaced by this one, making this feature biased, thus manipulating the result into favoring this feature. And depending on the position of the first valid value, these methods may or may not work. Therefore, the best solution was to fill the remaining null values with "NaN" (as a string) and 0 depending if it's type int/float or object, not causing much harm to the data set and keeping its original information (mean, mode, etc). 
+
+
+
 
 \section{Correlated Features}
 \label{sec:correlated_features}
@@ -184,17 +190,20 @@ def get_duplicated_value_cols(X):
     count = 0
     deleted = 0
     columns_not_accepted = {"Exon_Number","Transcript_ID",
-                            "Allele","Reference_Allele"}
+                            "Allele","Reference_Allele","SYMBOL"}
     
     #get matrix of duplicated columns
     duplicated_columns = X.T[X.T.duplicated(keep=False)].T.columns
     print(duplicated_columns)
     
+    
+    
+    
     #remove duplicated columns
     for col in duplicated_columns:
-        #if col in columns_not_accepted: 
-        X.drop(col,axis=1, inplace = True)
-        deleted += 1
+        if col in columns_not_accepted: 
+            X.drop(col,axis=1, inplace = True)
+            deleted += 1
         count += 1
         
     print("Columns with duplicated values:", count)
@@ -204,11 +213,13 @@ def get_duplicated_value_cols(X):
 
 With the help of the python framework it is possible to create a matrix that identifies the duplicated columns, this matrix is implemented in the \textit{get\_duplicated\_value\_cols} function represented above, followed by an iteration to select the columns to be removed. According to the "GDC Data User's Guide"\ the EXON, Feature and Reference\_Allele columns are already represented in the data set but with a different name, that is, taking into account the characteristics of each column and what each one represents these were the columns chosen to be removed.
 
-Now, finally, it is necessary to find the features where the majority share of the values are akin. The principle is the same as duplicated columns, therefore these features will not help us to differentiate between driver mutations and so features where more than 90\% of the values are similar have been removed from the data set.
+Now, finally, it is necessary to find the features where the majority share of the values are similar. The principle is the same as duplicated columns, therefore these features will not help us to differentiate between driver mutations and so features where more than 90\% of the values are similar have been removed from the data set. Attention, it is necessary to take into account the boolean type columns, which can present almost all of their values as False or True. This does not imply that they do not provide additional information, they may even be the factor that differentiates the selection of a mutation from another. The simplest way is to save the boolean columns in a variable like \emph{X[X.select\_dtypes("bool").columns]} and after the removal of the similar columns concat these columns with the rest of the data set.
 
+
+ 
+ 
 \begin{lstlisting}[language=Python]
-def get_similar_value_cols(X):
-    thresh = 90
+def get_similar_value_cols(X,thresh = 90):
     number_of_cols = 0
     similar_values = []
        
@@ -220,7 +231,6 @@ def get_similar_value_cols(X):
         if percent_vals[0] >= thresh:
             similar_values.append(c)
             number_of_cols += 1 
-            
   return similar_values
 \end{lstlisting}
 
@@ -261,9 +271,15 @@ The code above describes the application of the Label Encoder method for the X a
 \label{sec:test_train_split}
 \hspace{10px}Although the procedure of separating data into train data and test data is one of the most important steps in machine learning, to fulfill our goal, this step will only be applied after using feature selection and extraction algorithms. These algorithms can only be applied to the original data set and before any separation of the data into testing data and training data, if this does not happen, null values will reappear and it becomes more difficult to treat them in the middle of the algorithm implementation. The train-test split procedure is mainly used to estimate the performance of machine learning algorithms when they are used to create results on unused data to train the model. It's a quick and easy-to-run procedure, whose results allows you to compare the performance of machine learning algorithms for predictive modeling problems.
 
-Train-test, as the name implies, is to convert or split the original data set into 2 subsets the test and the training, where the training data set is used to fit the machine learning model and the test data set is used to later evaluate this same model.
+Train-test, as the name implies, is to convert or split the original data set into 2 subsets the test and the training, where the training data set is used to fit the machine learning model and the test data set is used to later evaluate this same model. The scikit-learn library has a innate function named \textit{train\_test\_split}. For this function, X and Y will be passed-in as arguments which splits X and Y with a, let's say 30\% for the \textit{test\_size} leaving 70\% for the \textit{train\_size}, successfully splitting between x\_train, x\_test, y\_train, and y\_test with a \textit{random\_state} of 42. 
 
-The scikit-learn library has a innate function named \textit{train\_test\_split}. For this function, X and Y will be passed-in as arguments which splits X and Y with a, let's say 30\% for the \textit{test\_size} leaving 70\% for the \textit{train\_size}, successfully splitting between x\_train, x\_test, y\_train, and y\_test with a \textit{random\_state} of 42.
+To evaluate the performance of the data set in each procedure, a function was created that uses the train-test technique and a Random Forest Classifier. It is now possible to utilize this function using the entire data set and use it later to compare this result with the results given by the data sets created by the feature extraction and selection methods. As shown below, training a Random Forest classifier using the features after preprocessing, led to 100\% accuracy in about 6.39s of training time. Training this classifier with different data sets always leads to the same accuracy (100\%) but with different training time depending on the size of the data sets some taking more that 100s of training time.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.66\textwidth,height=0.16\textheight]{Chapters/Figures/forest_test.png}
+    \caption{Forest Classifier accuracy test}
+\end{figure}
 
 
 \section{Features Scaling} % (fold)
@@ -272,12 +288,14 @@ The scikit-learn library has a innate function named \textit{train\_test\_split}
 
 It has been proven by testings that the Machine Learning and Deep Learning algorithms perform better with a normalized and scaled data set than with a non-normalized ans non-scaled data set. StandardScaler and Normalization are the 2 possible ways to normalize the data. Both StandardScaler and Normalization are very similar, however StandardScaler is simpler to apply than Normalization.
 
-By importing StandardScaler from the  sklearn.preprocessing libary, similar to LabelEncoding method, only this time the StandardScaler.fit\_transform will be apply on our X data set. After applying all the data preprocessing steps, the data set will be similar to Figure \ref{fig:xtrain_data} and ready to be used in the algorithms described in the following chapters.
+By importing StandardScaler from the  sklearn.preprocessing libary, similar to LabelEncoding method, only this time the StandardScaler.fit\_transform will be apply on our X data set.
+
+%After applying all the data preprocessing steps, the data set will be similar to Figure \ref{fig:xtrain_data} and ready to be used in the algorithms described in the following chapters.
 
 
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.7\textwidth,height=0.17\textheight]{Chapters/Figures/standardScaler.png}
-    \caption{Normalized X data}
-    \label{fig:xtrain_data}
-\end{figure}
+%\begin{figure}[h]
+%    \centering
+%    \includegraphics[width=0.7\textwidth,height=0.17\te%xtheight]{Chapters/Figures/standardScaler.png}
+%    \caption{Normalized X data}
+%    \label{fig:xtrain_data}
+%\end{figure}
